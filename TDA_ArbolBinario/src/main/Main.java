@@ -18,12 +18,12 @@ public class Main {
         tree.getRight().setRight(new BinaryTree(6));
         tree.getRight().getRight().setRight(new BinaryTree(7));
         
-        BinaryTree<Integer> tree2 = new BinaryTree("Zero");
-        tree2.setLeft(new BinaryTree("One"));
-        tree2.setRight(new BinaryTree("Two"));
-        tree2.getLeft().setLeft(new BinaryTree("Three"));
-        tree2.getLeft().setRight(new BinaryTree("Four"));
-        tree2.getRight().setRight(new BinaryTree("Five"));
+        BinaryTree<Integer> tree2 = new BinaryTree(0);
+        tree2.setLeft(new BinaryTree(1));
+        tree2.setRight(new BinaryTree(2));
+        tree2.getLeft().setLeft(new BinaryTree(3));
+        tree2.getLeft().setRight(new BinaryTree(4));
+        tree2.getRight().setRight(new BinaryTree(5));
 
         
         /*Pregunta 1*/
@@ -49,6 +49,14 @@ public class Main {
         System.out.println("Pregunta 4");
         //Metodo recursivo
         System.out.println("IsIdentical de forma recursiva: "+tree.recursiveIsIdentical(tree,(n1,n2)->{return n1-n2;}));
+        //Metodo iterativo
+        System.out.println("IsIdentical de forma iterativo: "+tree.iterativeIsIdentical(tree,(n1,n2)->{return n1-n2;}));      
+        /*Pregunta 5*/
+        System.out.println("Pregunta 5");
+        //Metodo recursivo
+        //Metodo iterativo
+        System.out.print("iterativeLargestValueOfEachLevel de forma recursiva: ");
+        tree.iterativeLargestValueOfEachLevel((n1,n2)->{return n1-n2;});
         /*Pregunta 6*/
         System.out.println("Pregunta 6");
         //Metodo recursivo

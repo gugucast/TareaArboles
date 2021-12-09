@@ -389,13 +389,12 @@ public class BinaryTree<T> {
     Para asi poder comparar su contenido y que este se lo pase como parametro
     */
     public boolean recursiveIsIdentical(BinaryTree<T> tree,Comparator<T> cmp ){
-        //Si uno es vacio y otro no, no son iguales
-        if(!(this.isEmpty() && tree.isEmpty())){
+        if(this.isEmpty()){
             return false;
         }
         else{
             //Si el contenido de los arboles no son iguales podemos decir que no son identicos
-            if(cmp.compare(this.root.getContent(), tree.root.getContent())!=0){
+            if(cmp.compare(this.getRoot().getContent(), tree.getRoot().getContent())!=0){
                 return false;
             }
             //Si algun hijo izquierdo entre los dos arboles es nulo no searian iguales
@@ -406,7 +405,8 @@ public class BinaryTree<T> {
                     return false;
                 }
             }
-            else{
+            else if((this.getLeft()==null && tree.getLeft()!=null) ||
+                    (this.getLeft()!=null && tree.getLeft()==null)){
                 return false;
             }
             //Si algun hijo izquierdo entre los dos arboles es nulo no searian iguales
@@ -417,7 +417,8 @@ public class BinaryTree<T> {
                     return false;
                 }
             }
-            else{
+            else if((this.getRight()==null && tree.getRight()!=null) ||
+                    (this.getRight()!=null && tree.getRight()==null)){
                 return false;
             }
         }
@@ -434,8 +435,8 @@ public class BinaryTree<T> {
         //usamos 2 pilas para recorrer a la vez los dos arboles a la vez
         Stack<BinaryTree<T>>  s1 = new Stack<>();
         Stack<BinaryTree<T>>  s2 = new Stack<>();
-        if(this.isEmpty() && tree.isEmpty()){
-            return true;
+        if(this.isEmpty()){
+            return false;
         }else{
             s1.push(this);
             s2.push(tree);
@@ -449,14 +450,16 @@ public class BinaryTree<T> {
                     if(t1.getLeft()!=null && t2.getLeft()!=null){
                         s1.push(t1.getLeft());
                         s2.push(t2.getLeft());
-                    }else{
-                        return false;
+                    }else if((this.getLeft()==null && tree.getLeft()!=null) ||
+                        (this.getLeft()!=null && tree.getLeft()==null)){
+                            return false;
                     }
                     if(t1.getRight()!=null && t2.getRight()!=null){
                         s1.push(t1.getRight());
                         s2.push(t2.getRight());
-                    }else{
-                        return false;
+                    }else if((this.getRight()==null && tree.getRight()!=null) ||
+                        (this.getRight()!=null && tree.getRight()==null)){
+                            return false;
                     }
                 }else{
                     return false;
