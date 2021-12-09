@@ -1,6 +1,12 @@
 package tree;
 
+import java.util.ArrayDeque;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Stack;
 
 public class BinaryTree<T> {
@@ -480,115 +486,109 @@ public class BinaryTree<T> {
     Metodo Recursivo:
     Descripcion:
     */
-    public  void recursiveLargestValueOfEachLevel(Comparator<T> cmp){//nose
-        if(!this.isEmpty()&&cmp!=null){
-            Stack<BinaryTree<T>> s = new Stack<>();
-            if(this.getLeft()!=null){
-                s.push(this.getLeft());
-            }if(this.getRight()!=null){
-                s.push(this.getRight());
-            }
-            BinaryTree<T> treeMayor = arbolMayor(s,cmp);
-            while(!s.isEmpty()){
-                BinaryTree<T> tp = s.pop();
-                if(cmp.compare(treeMayor.getRoot().getContent(), tp.getRoot().getContent())>0){
-                    treeMayor = tp;
+    public void recursivelargestValueOfEachLevel(Comparator<T> cmp){
+        Queue<T> queue = this.largestValuesQueueRecursive(cmp);
+        while(!queue.isEmpty()) {
+            System.out.print(queue.poll()+" ");
+        }
+        System.out.println("");
+    }
+    
+    private Queue<T> largestValuesQueueRecursive(Comparator<T> cmp){
+        if(this.isEmpty()) return null;
+        
+        Queue<T> queue = new ArrayDeque();
+        queue.offer(root.getContent());
+        
+        Queue<T> l_queue = new ArrayDeque();
+        Queue<T> r_queue = new ArrayDeque();
+        
+        if(root.getLeft() != null){
+            l_queue = root.getLeft().largestValuesQueueRecursive(cmp);
+        }
+        
+        if(root.getRight() != null){
+            r_queue = root.getRight().largestValuesQueueRecursive(cmp);
+        }
+        
+        while(!l_queue.isEmpty() || !r_queue.isEmpty()){
+            
+            if(!l_queue.isEmpty() && !r_queue.isEmpty()){
+                int b = cmp.compare(l_queue.peek(), r_queue.peek());
+                if(b >= 0){
+                    queue.offer(l_queue.poll());
+                    r_queue.poll();
+                }else{
+                    queue.offer(r_queue.poll());
+                    l_queue.poll();
                 }
-            System.out.print(treeMayor.getRoot().getContent());
+            }
+            else if(!l_queue.isEmpty()){
+                queue.offer(l_queue.poll());
+            }else{
+                queue.offer(r_queue.poll());
             }
         }
         
+        return queue;
     }
     
-    public static <T> BinaryTree<T> arbolMayor(Stack<BinaryTree<T>> s, Comparator<T> cmp){
-        return null;
-    }
-    /*Modo iterativo*/
+    //Metodo iterativo
     
-    public  void iterativeLargestValueOfEachLevel(Comparator<T> cmp){
-        Stack<BinaryTree<T>> s1 = new Stack<>();
-        //Esta pila es de apoyo para cuando se itere la pila 1 cambie a todos los valores del 2
-        //para asi poder cambiar de nivel
-        Stack<BinaryTree<T>> s2 = new Stack<>();
-        String salida = "";
-        if(!this.isEmpty()){
-            //Contador de elementos en un nivel
-            int cont=0;
-            //Como raiz es el nodo mayor, ya que es el unico se lo agrega directamente
-            //a la salida
-            salida = salida + this.root.getContent()+" ";
-            //Si su hijo izquierdo no es null
-            //Aumenta el contador 1 y se agrega al hijo izquierdo a la pila 1
-            if(this.getLeft()!=null){
-                cont++;
-                s1.push(this.getLeft());
-            //Si su hijo derecho no es null
-            //Aumenta el contador 1 y se agrega al hijo izquierdo a la pila 1
-            }else if(this.getRight()!=null){
-                cont++;
-                s1.push(this.getRight());
-            }
-            //Segundo contador
-            //Cuenta los hijos de los nodos del nivel actual, para cuando se termine
-            //de contar los del nivel actual el primero contador se actualice al contador 2
-            int cont2 = 0;
-            //Este while es para recorrer n veces, siendo n la cantidad de elementos en el
-            //nivel actual
-            while(cont!=0){
-                //Será el arbol el cual cambiara mientras se itera dependiendo si otro elemento
-                //del nivel es mayor que el
-                BinaryTree<T> treeMayor= null;
-                //Se recorre la pila
-                while(!s1.isEmpty()){
-                    //En el caso de que haya un elemento en ese nivel será ese elemento
-                    //el mayor
-                    if(cont==1 && treeMayor==null){
-                        BinaryTree<T> t = s1.pop();
-                        cont--;
-                        treeMayor = t;
-                        //Si su hijo izquierdo no es null
-                        //Aumenta el contador 2 y se agrega al hijo izquierdo a la pila 2
-                        if(t.getLeft()!=null){
-                            s2.push(t.getLeft());
-                            cont2++;
-                        //Si su hijo derecho no es null
-                        //Aumenta el contador 2 y se agrega al hijo izquierdo a la pila 2
-                        }else if(t.getRight()!=null){
-                            s2.push(t.getRight());
-                            cont2++;
-                        }
-                    }else{
-                       BinaryTree<T> t = s1.pop(); 
-                       cont--;
-                       //Si nodo es mayor al treemayor, treemayor toma el valor de ese nodo
-                       if(cmp.compare(t.getRoot().getContent(), treeMayor.getRoot().getContent())>0){
-                           treeMayor = t;
-                       }
-                        //Si su hijo izquierdo no es null
-                        //Aumenta el contador 2 y se agrega al hijo izquierdo a la pila 2
-                        if(t.getLeft()!=null){
-                           s2.push(t.getLeft());
-                            cont2++;
-                        //Si su hijo derecho no es null
-                        //Aumenta el contador 2 y se agrega al hijo izquierdo a la pila 2    
-                        }else if(t.getRight()!=null){
-                            s2.push(t.getRight());
-                            cont2++;
-                        }
-                       }
-                    }
-                if(treeMayor!=null){
-                    salida = salida + treeMayor.getRoot().getContent().toString();
-                }
-                cont=cont2;
-                cont2=0;
-                //Pasamos los valores de la pila 2 a la 1 para avanzar de nivel
-                while(!s2.isEmpty()){
-                    s1.push(s2.pop());
-                }
+    public void iteravitelargestValueOfEachLevel(Comparator<T> cmp){
+        
+        if(root == null) return;
+        
+        Stack<BinaryNode<T>> pila = new Stack();
+        pila.push(root);
+        
+        // Dicc -> {Nodo: Nivel del Nodo}
+        Map<BinaryNode<T>, Integer> mapa = new HashMap();
+        
+        // Dicc -> {Nivel: Lista con los Valores de ese Nivel}
+        Map<Integer, List<T>> mapa_valores = new HashMap();
+        
+        mapa.put(root, 1);
+        
+        while(!pila.isEmpty()){
+            
+            BinaryNode<T> padre = pila.pop();
+            int nivel = mapa.get(padre)+1;
+            
+            if(padre.getLeft() != null){
+                BinaryNode<T> l_node = padre.getLeft().getRoot();
+                pila.push(l_node);
+                
+                mapa.put(l_node, nivel);
+                if(mapa_valores.containsKey(nivel)) mapa_valores.get(nivel).add(l_node.getContent());
+                else {
+                    List<T> lista = new LinkedList();
+                    lista.add(l_node.getContent());
+                    mapa_valores.put(nivel, lista);
                 }
             }
-        System.out.println(salida);
+            if(padre.getRight() != null){
+                BinaryNode<T> r_node = padre.getRight().getRoot();
+                pila.push(r_node);
+                
+                mapa.put(r_node, nivel);
+                if(mapa_valores.containsKey(nivel)) mapa_valores.get(nivel).add(r_node.getContent());
+                else {
+                    List<T> lista = new LinkedList();
+                    lista.add(r_node.getContent());
+                    mapa_valores.put(nivel, lista);
+                }
+            }
+        }
+        
+        System.out.print(root.getContent()+" ");
+        
+        mapa_valores.keySet().forEach(i -> {
+            System.out.print(mapa_valores.get(i).stream().max(cmp).get()+" ");
+        });
+        
+        System.out.println("");
+        
     }
     
     //6. El método countNodesWithOnlyChild debe retornar el número de nodos de un árbol que 

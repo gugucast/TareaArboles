@@ -54,9 +54,11 @@ public class Main {
         /*Pregunta 5*/
         System.out.println("Pregunta 5");
         //Metodo recursivo
+        System.out.print("LargestValueOfEachLevel de forma recursiva: ");
+        tree.recursivelargestValueOfEachLevel((n1,n2)->{return n1-n2;});
         //Metodo iterativo
-        System.out.print("iterativeLargestValueOfEachLevel de forma recursiva: ");
-        tree.iterativeLargestValueOfEachLevel((n1,n2)->{return n1-n2;});
+        System.out.print("LargestValueOfEachLevel de forma iterativa: ");
+        tree.iteravitelargestValueOfEachLevel((n1,n2)->{return n1-n2;});
         /*Pregunta 6*/
         System.out.println("Pregunta 6");
         //Metodo recursivo
