@@ -484,81 +484,77 @@ public class BinaryTree<T> {
         
     /*
     Metodo Recursivo:
-    Descripcion:
     */
     public void recursivelargestValueOfEachLevel(Comparator<T> cmp){
+        //Solamente el metodo recorre el queue para imprimir sus valores
+        //los cuales son el valor más grande de cada nivel del árbol
         Queue<T> queue = this.largestValuesQueueRecursive(cmp);
         while(!queue.isEmpty()) {
             System.out.print(queue.poll()+" ");
         }
-        System.out.println("");
+        System.out.println(".");
     }
     
     private Queue<T> largestValuesQueueRecursive(Comparator<T> cmp){
-        if(this.isEmpty()) return null;
-        
-        Queue<T> queue = new ArrayDeque();
-        queue.offer(root.getContent());
-        
-        Queue<T> l_queue = new ArrayDeque();
-        Queue<T> r_queue = new ArrayDeque();
-        
-        if(root.getLeft() != null){
-            l_queue = root.getLeft().largestValuesQueueRecursive(cmp);
+        if(this.isEmpty()) {
+            return null;
         }
-        
-        if(root.getRight() != null){
-            r_queue = root.getRight().largestValuesQueueRecursive(cmp);
+        Queue<T> q = new ArrayDeque();
+        q.offer(this.getRoot().getContent());
+        Queue<T> queueLeft = new ArrayDeque();
+        Queue<T> queueRight = new ArrayDeque();
+        //Si ningun hijos es nulo el Queue de cada hijo sera igual a si mismo
+        //que se invoca el metodo de forma recursiva
+        if(this.getLeft() != null){
+            queueLeft = this.getLeft().largestValuesQueueRecursive(cmp);
         }
-        
-        while(!l_queue.isEmpty() || !r_queue.isEmpty()){
-            
-            if(!l_queue.isEmpty() && !r_queue.isEmpty()){
-                int b = cmp.compare(l_queue.peek(), r_queue.peek());
-                if(b >= 0){
-                    queue.offer(l_queue.poll());
-                    r_queue.poll();
+        if(this.getRight() != null){
+            queueRight = this.getRight().largestValuesQueueRecursive(cmp);
+        }
+        //se comparan los queue paralelamente, y si si son el mayor en su nivel se 
+        //los agrega al queue que se va a retornar
+        while(!queueLeft.isEmpty() || !queueRight.isEmpty()){ 
+            if(!queueLeft.isEmpty() && !queueRight.isEmpty()){
+                if(cmp.compare(queueLeft.peek(), queueRight.peek()) >= 0){
+                    q.offer(queueLeft.poll());
+                    queueRight.poll();
                 }else{
-                    queue.offer(r_queue.poll());
-                    l_queue.poll();
+                    q.offer(queueRight.poll());
+                    queueLeft.poll();
                 }
             }
-            else if(!l_queue.isEmpty()){
-                queue.offer(l_queue.poll());
+            else if(!queueLeft.isEmpty()){
+                q.offer(queueLeft.poll());
             }else{
-                queue.offer(r_queue.poll());
+                q.offer(queueRight.poll());
             }
         }
-        
-        return queue;
+        return q;
     }
     
     //Metodo iterativo
     
     public void iteravitelargestValueOfEachLevel(Comparator<T> cmp){
         
-        if(root == null) return;
+        if(this.getRoot() == null) {
+            return;
+        }
         
-        Stack<BinaryNode<T>> pila = new Stack();
-        pila.push(root);
-        
-        // Dicc -> {Nodo: Nivel del Nodo}
+        Stack<BinaryNode<T>> s = new Stack();
+        s.push(this.getRoot());
+        //Mapa del nodo con su nivel
         Map<BinaryNode<T>, Integer> mapa = new HashMap();
-        
-        // Dicc -> {Nivel: Lista con los Valores de ese Nivel}
+        //Mapa del nivel con lista de sus valores
         Map<Integer, List<T>> mapa_valores = new HashMap();
-        
-        mapa.put(root, 1);
-        
-        while(!pila.isEmpty()){
-            
-            BinaryNode<T> padre = pila.pop();
+        mapa.put(this.getRoot(), 1);
+        //Recorremos la pila con los nodos, para ir añadiendo a la lista de cada nivel
+        //el contenido de ese nodo
+        while(!s.isEmpty()){
+            BinaryNode<T> padre = s.pop();
             int nivel = mapa.get(padre)+1;
-            
             if(padre.getLeft() != null){
                 BinaryNode<T> l_node = padre.getLeft().getRoot();
-                pila.push(l_node);
-                
+                s.push(l_node);
                 mapa.put(l_node, nivel);
                 if(mapa_valores.containsKey(nivel)) mapa_valores.get(nivel).add(l_node.getContent());
                 else {
@@ -569,8 +565,7 @@ public class BinaryTree<T> {
             }
             if(padre.getRight() != null){
                 BinaryNode<T> r_node = padre.getRight().getRoot();
-                pila.push(r_node);
-                
+                s.push(r_node);
                 mapa.put(r_node, nivel);
                 if(mapa_valores.containsKey(nivel)) mapa_valores.get(nivel).add(r_node.getContent());
                 else {
@@ -580,19 +575,18 @@ public class BinaryTree<T> {
                 }
             }
         }
-        
-        System.out.print(root.getContent()+" ");
-        
+        //recoremos el mapa e imprimos el maximo de la lista por nivel
+        System.out.print(this.getRoot().getContent()+" ");
         mapa_valores.keySet().forEach(i -> {
             System.out.print(mapa_valores.get(i).stream().max(cmp).get()+" ");
         });
-        
         System.out.println("");
         
     }
     
     //6. El método countNodesWithOnlyChild debe retornar el número de nodos de un árbol que 
     //tienen un solo hijo.
+    //Metodo recursivo
     public int recursiveCountNodesWithOnlyChild(){
         int count = 0;
         if(this.isEmpty() || this.isLeaf()){
@@ -657,6 +651,7 @@ public class BinaryTree<T> {
     //7. El método isHeightBalanced debe retornar si un árbol binario está balanceado en altura o 
     //no. Un árbol vacío está siempre balanceado en altura. Un árbol binario no vacío está 
     //balanceado si y solo si:
+    
     /*Metodo recursivo*/
     
     public boolean recursiveIsHeightBalanced(){
