@@ -128,12 +128,11 @@ public class BinaryTree<T> {
     */
     
     public BinaryTree<T> recursiveFindParent(BinaryNode<T> node, Comparator<T> cmp){
-        //Si el nodo del arbol al que le vamos a buscar el padre es nulo retornamos null
-        if(node==null || cmp==null || this.isEmpty()){
+        if(this.isEmpty()){
             return null;
         //Si este nodo es el mismo que el nodo raiz que invoca a este metodo se retorna null
         //, dado que un nodo raíz no tiene.
-        }else if(cmp.compare(this.root.getContent(), node.getContent())==0){
+        }else if(cmp.compare(this.getRoot().getContent(), node.getContent())==0){
             return null;
         }else{
             if(this.getLeft()!=null){
@@ -143,21 +142,24 @@ public class BinaryTree<T> {
                 if(cmp.compare(this.getLeft().getRoot().getContent(), node.getContent())==0){
                     return this;
                 }
-            }else if(this.getRight()!=null){
+            }if(this.getRight()!=null){
                 if(cmp.compare(this.getRight().getRoot().getContent(), node.getContent())==0){
                     return this;
                 }
             }
-            else{
+            
                 //En caso de que ninguno los dos hijos sea igual al nodo que estamos comparando
                 //volveremos a llamar a la funcion en cada hijo y si este da un valor diferente
                 //a null retornamos ese valor dado que seria el padre de este nodo
-                if(this.getLeft().recursiveFindParent(node, cmp)!=null){
-                    return this.getLeft().recursiveFindParent(node, cmp);
-                }else if(this.getRight().recursiveFindParent(node, cmp)!=null){
+                if(this.getLeft()!=null){
+                    if(this.getLeft().recursiveFindParent(node, cmp)!=null){
+                        return this.getLeft().recursiveFindParent(node, cmp);
+                    }
+                }if(this.getRight()!=null){    
+                    if(this.getRight().recursiveFindParent(node, cmp)!=null){
                     return this.getRight().recursiveFindParent(node, cmp);
+                    }
                 }
-            }
         }
         //en caso de que ninguno sea su padre 
         return null;
@@ -238,7 +240,7 @@ public class BinaryTree<T> {
     /*Metodo iterativo*/
     
     public int iterativeCountLevels(){
-        int niveles = 0;
+        int niveles = 1;
         //Pila que contiene los BInaryTree del nivel actual
         Stack<BinaryTree<T>> s1 = new Stack<>();
         //Pila que contiene los BInaryTree del siguiente nivel
@@ -476,42 +478,27 @@ public class BinaryTree<T> {
     Descripcion:
     */
     public  void recursiveLargestValueOfEachLevel(Comparator<T> cmp){//nose
-        /*
-        //Vlidar casos de null
-        Stack<BinaryTree<T>> s = new Stack<>();
-        if(this.getRoot().getLeft()!=null ){
-          s.push(this.getLeft());
-        }if(this.getRoot().getRight()!=null){
-          s.push(this.getRight());
-        }if(this.getRoot().getLeft()!=null && this.getRoot().getRight()!=null){
-          
-        }else{
-            Stack<BinaryTree<T>> s2 = new Stack<>();
-            s.push(this);
-            BinaryTree<T> tmayor = s.pop();
+        if(!this.isEmpty()&&cmp!=null){
+            Stack<BinaryTree<T>> s = new Stack<>();
+            if(this.getLeft()!=null){
+                s.push(this.getLeft());
+            }if(this.getRight()!=null){
+                s.push(this.getRight());
+            }
+            BinaryTree<T> treeMayor = arbolMayor(s,cmp);
             while(!s.isEmpty()){
-                BinaryTree<T> t = s.pop();
-                if(t.getRoot().getLeft()!=null){
-                    if(cmp.compare(t.getLeft().getRoot().getContent(), tmayor.getLeft().getRoot().getContent())>0){
-                        tmayor=t.getLeft();
-                    }
-                    s2.push(t.getLeft());
-                }else if(t.getRoot().getRight()!=null){
-                    if(cmp.compare(t.getRight().getRoot().getContent(), tmayor.getRight().getRoot().getContent())>0){
-                        tmayor=t.getRight();
-                    }
-                    s2.push(t.getRight());
-                System.out.print(tmayor.getRoot().getContent());
-                }if(t.getRoot().getLeft()!=null && t.getRoot().getRight()==null){
-                  //  t.getRoot().getLeft().recursiveLargestValueOfEachLevel( s2, cmp);
-                }else if(t.getRoot().getLeft()==null && t.getRoot().getRight()!=null){
-                  //  t.getRoot().getRight().recursiveLargestValueOfEachLevel( s2, cmp);
-                }else if(t.getRoot().getLeft()!=null && t.getRoot().getRight()!=null){
-                   // t.getRoot().getLeft().recursiveLargestValueOfEachLevel( s2, cmp);
+                BinaryTree<T> tp = s.pop();
+                if(cmp.compare(treeMayor.getRoot().getContent(), tp.getRoot().getContent())>0){
+                    treeMayor = tp;
                 }
+            System.out.print(treeMayor.getRoot().getContent());
             }
         }
-        */
+        
+    }
+    
+    public static <T> BinaryTree<T> arbolMayor(Stack<BinaryTree<T>> s, Comparator<T> cmp){
+        return null;
     }
     /*Modo iterativo*/
     
@@ -741,4 +728,8 @@ public class BinaryTree<T> {
         //lo esta
         return true;
     } 
+    @Override
+    public String toString(){
+        return ""+root.getContent();
+    }
 }
