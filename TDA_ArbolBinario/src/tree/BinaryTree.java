@@ -714,6 +714,7 @@ public class BinaryTree<T> {
             Stack<BinaryTree<T>> s = new Stack<>();
             s.push(this);
             while(!s.isEmpty()){
+                //Calculamos la altura de cada hijo si no es nulo
                 BinaryTree<T> t = s.pop();
                 int alturaLeft=0;
                 int alturaRight=0;
@@ -721,8 +722,12 @@ public class BinaryTree<T> {
                     alturaLeft = t.getLeft().recursiveCountLevels();
                 }if(t.getRight()!=null){
                     alturaRight = t.getRight().recursiveCountLevels();
+                //Si la altura del hijo izquiero menos con la del hijo derecho es mayor a 1
+                //el arbol no esta balanceado
                 }if((alturaLeft-alturaRight)>1){
                     return false;
+                //Caso contrario hay que comprobar si sus hijos estan balanceado
+                //por ende se los añade a la pila
                 }else{
                     if(t.getLeft()!=null){
                         s.push(t.getLeft());
@@ -732,6 +737,8 @@ public class BinaryTree<T> {
                 }
             }
         }
+        //Si en ningun momento se dice que el arbol no esta nivelado, concluimos que si
+        //lo esta
         return true;
     } 
 }
